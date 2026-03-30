@@ -1,0 +1,60 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  body {
+    @apply bg-[#030712] text-slate-200 antialiased font-sans;
+    /* Custom dark scrollbar for a seamless tech vibe */
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-[#030712];
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 rounded-full border border-[#030712];
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-blue-600;
+  }
+
+  ::selection {
+    @apply bg-blue-500/30 text-blue-200;
+  }
+}
+
+@layer utilities {
+  .bg-grid-white {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.03)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+  }
+
+  .text-glow {
+    text-shadow: 0 0 24px rgba(59, 130, 246, 0.6);
+  }
+
+  .box-glow {
+    box-shadow: 0 0 30px -10px rgba(59, 130, 246, 0.4);
+    will-change: box-shadow;
+  }
+
+  .glass-panel {
+    @apply bg-slate-900/70 border border-slate-700/50 relative;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+}
+
+/* Hide scrollbar for category pills but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
