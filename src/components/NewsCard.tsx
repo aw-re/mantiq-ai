@@ -1,10 +1,14 @@
 ﻿import { forwardRef } from 'react';
-import { Calendar, User, Clock, ArrowLeft, Cpu } from 'lucide-react';
+import { Calendar, User, Clock, ArrowLeft, ArrowRight, Cpu } from 'lucide-react';
 import { NewsArticle } from '../data/news';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excerpt, author, date, imageUrl, category, readTime }, ref) => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language.startsWith('ar');
+  
   return (
     <motion.article
       ref={ref}
@@ -33,23 +37,23 @@ export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excer
         
         {/* Category Pill with AI thematic icon */}
         <motion.div 
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="absolute top-4 right-4 z-20 bg-slate-950/70 backdrop-blur-md text-blue-400 text-xs font-bold px-4 py-1.5 rounded-full border border-blue-500/30 flex items-center gap-1.5 shadow-lg"
+          className={`absolute top-4 ${isRTL ? 'right-4' : 'left-4'} z-20 bg-slate-950/70 backdrop-blur-md text-blue-400 text-xs font-bold px-4 py-1.5 rounded-full border border-blue-500/30 flex items-center gap-1.5 shadow-lg`}
         >
           <Cpu className="w-3 h-3" />
-          {category}
+          {t(`categories.${category}`, { defaultValue: category })}
         </motion.div>
       </div>
       
       <div className="p-6 flex flex-col flex-grow relative z-20">
-        <div className="flex flex-row items-center space-x-4 space-x-reverse text-xs text-slate-400 mb-4">
-          <div className="flex items-center space-x-1.5 space-x-reverse bg-slate-800/50 px-3 py-1 rounded-full">
+        <div className={`flex flex-row items-center space-x-4 text-xs text-slate-400 mb-4 ${isRTL ? 'space-x-reverse' : ''}`}>
+          <div className={`flex items-center space-x-1.5 bg-slate-800/50 px-3 py-1 rounded-full ${isRTL ? 'space-x-reverse' : ''}`}>
             <Calendar className="w-3.5 h-3.5 text-blue-500" />
             <span>{date}</span>
           </div>
-          <div className="flex items-center space-x-1.5 space-x-reverse bg-slate-800/50 px-3 py-1 rounded-full ml-4">
+          <div className={`flex items-center space-x-1.5 bg-slate-800/50 px-3 py-1 rounded-full ${isRTL ? 'ml-4 space-x-reverse' : 'mr-4'}`}>
             <Clock className="w-3.5 h-3.5 text-purple-400" />
             <span>{readTime}</span>
           </div>
@@ -64,13 +68,13 @@ export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excer
         </p>
         
         <div className="flex items-center justify-between pt-5 border-t border-slate-700/50 mt-auto">
-          <div className="flex items-center space-x-3 space-x-reverse">
-            <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 ml-2 group-hover:border-blue-500/50 transition-colors">
+          <div className={`flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
+            <div className={`w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 group-hover:border-blue-500/50 transition-colors ${isRTL ? 'ml-2' : 'mr-2'}`}>
               <User className="w-4 h-4" />
             </div>
             <div>
               <span className="block text-sm font-medium text-slate-200">{author}</span>
-              <span className="block text-[10px] text-slate-500">باحث متخصص</span>
+              <span className="block text-[10px] text-slate-500">{t('card.researcher')}</span>
             </div>
           </div>
           
@@ -78,8 +82,17 @@ export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excer
             to={`/news/${id}`}
             className="text-blue-400 hover:text-blue-300 transition-colors p-2.5 rounded-full cursor-pointer flex items-center group/btn border border-transparent hover:border-blue-500/30"
           >
-            <span className="text-xs font-bold opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 ml-2 tracking-wide">اقرأ التفاصيل</span>
-            <ArrowLeft className="w-5 h-5" />
+            {isRTL ? (
+              <>
+                <span className="text-xs font-bold opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 ml-2 tracking-wide">{t('card.readMore')}</span>
+                <ArrowLeft className="w-5 h-5" />
+              </>
+            ) : (
+              <>
+                <span className="text-xs font-bold opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 mr-2 tracking-wide">{t('card.readMore')}</span>
+                <ArrowRight className="w-5 h-5" />
+              </>
+            )}
           </Link>
         </div>
       </div>

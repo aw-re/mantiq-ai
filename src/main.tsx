@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'sonner';
 import './index.css';
+import './i18n'; // Import i18n initialization
 import Loader from './components/Loader';
 import RootLayout from './layouts/RootLayout';
 import AdminLayout from './layouts/AdminLayout';

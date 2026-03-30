@@ -1,12 +1,28 @@
 ﻿import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Network, Sparkles, ArrowRight, Cpu } from 'lucide-react';
+import { Menu, X, Network, Sparkles, ArrowRight, Cpu, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function RootLayout() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+
+  const isRTL = i18n.language.startsWith('ar');
+
+  const navLinks = [
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.models'), path: '/models' },
+    { name: t('nav.exclusive'), path: '/exclusive', icon: <Sparkles className="w-3.5 h-3.5 text-blue-400" /> },
+    { name: t('nav.about'), path: '/about' },
+    { name: t('nav.admin'), path: '/admin', icon: <Cpu className="w-3.5 h-3.5 text-red-400" /> }
+  ];
+
+  const toggleLanguage = () => {
+    i18n.changeLanguage(isRTL ? 'en' : 'ar');
+  };
 
   // Handle scroll for header blur
   useEffect(() => {
@@ -23,16 +39,8 @@ export default function RootLayout() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  const navLinks = [
-    { name: 'الرئيسية', path: '/' },
-    { name: 'النماذج الجديدة', path: '/models' },
-    { name: 'مقالات حصرية', path: '/exclusive', icon: <Sparkles className="w-3.5 h-3.5 text-blue-400" /> },
-    { name: 'من نحن', path: '/about' },
-    { name: 'لوحة الإدارة', path: '/admin', icon: <Cpu className="w-3.5 h-3.5 text-red-400" /> }
-  ];
-
   return (
-    <div className="min-h-screen font-sans overflow-x-hidden flex flex-col" dir="rtl">
+    <div className={`min-h-screen font-sans overflow-x-hidden flex flex-col ${isRTL ? '' : 'font-sans'}`} dir={isRTL ? "rtl" : "ltr"}>
       {/* Background Layers */}
       <div className="fixed inset-0 bg-[#030712] -z-20" />
       <div className="fixed top-0 inset-x-0 h-[800px] overflow-hidden -z-10 bg-grid-white pointer-events-none">
@@ -61,19 +69,19 @@ export default function RootLayout() {
         }`}
       >
         <div className="container mx-auto px-4 lg:px-6 flex justify-between items-center text-slate-200">
-          <Link to="/" className="flex items-center space-x-3 space-x-reverse cursor-pointer group outline-none">
+          <Link to="/" className={`flex items-center space-x-3 cursor-pointer group outline-none ${isRTL ? 'space-x-reverse' : ''}`}>
             <div className="p-2.5 bg-slate-900/80 rounded-xl backdrop-blur-md border border-slate-700/50 shadow-[0_0_15px_rgba(59,130,246,0.2)] group-hover:border-blue-500/50 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all duration-300">
               <Network className="w-6 h-6 lg:w-7 lg:h-7 text-blue-400 group-hover:text-cyan-300 transition-colors" />
             </div>
             <div>
               <h1 className="text-lg lg:text-2xl font-black tracking-tight leading-none text-white text-glow">
-                منطق
+                {t('header.logo')}
               </h1>
             </div>
           </Link>
           
           {/* Desktop Nav */}
-          <nav className="hidden md:flex space-x-8 space-x-reverse font-semibold text-sm">
+          <nav className={`hidden md:flex space-x-8 font-semibold text-sm ${isRTL ? 'space-x-reverse' : ''}`}>
             {navLinks.map((item) => (
               <Link 
                 key={item.name}
@@ -88,12 +96,19 @@ export default function RootLayout() {
           </nav>
           
           <div className="flex items-center gap-4 text-white font-medium">
+            <button 
+              onClick={toggleLanguage}
+              className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-semibold"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="hidden sm:inline">{t('header.language')}</span>
+            </button>
             <motion.button 
               whileHover={{ scale: 1.05, backgroundColor: 'rgba(59, 130, 246, 0.1)' }}
               whileTap={{ scale: 0.95 }}
               className="hidden md:block py-2.5 px-6 lg:px-7 rounded-full border border-slate-700 hover:border-blue-500/50 transition-all text-xs lg:text-sm font-bold bg-slate-900/50 backdrop-blur-sm"
             >
-              تسجيل الدخول
+              {t('header.login')}
             </motion.button>
             {/* Mobile Menu Toggle */}
             <button 
@@ -130,7 +145,7 @@ export default function RootLayout() {
                 </Link>
               ))}
               <button className="mt-4 w-full py-3 rounded-xl border border-blue-500/50 bg-blue-500/10 text-blue-400 font-bold transition-all hover:bg-blue-500/20">
-                تسجيل الدخول
+                {t('header.login')}
               </button>
             </nav>
           </motion.div>
@@ -150,12 +165,12 @@ export default function RootLayout() {
         
         <div className="container mx-auto px-4 lg:px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
-            <div className="flex items-center space-x-3 space-x-reverse mb-6">
+            <div className={`flex items-center space-x-3 mb-6 ${isRTL ? 'space-x-reverse' : ''}`}>
               <Network className="w-8 h-8 text-blue-500" />
-              <h2 className="text-2xl font-black text-white">منطق</h2>
+              <h2 className="text-2xl font-black text-white">{t('header.logo')}</h2>
             </div>
             <p className="mb-8 leading-relaxed max-w-sm text-sm text-slate-500">
-              واجهتك الرقمية لتجاوز حدود المعرفة. نغوص في أعماق الخوارزميات لنقدم لك الحقيقة وراء كل سطر برمجي.
+              {t('footer.description')}
             </p>
             <div className="flex gap-4 text-slate-300">
               {['X', 'In', 'Gh'].map((social) => (
@@ -172,29 +187,29 @@ export default function RootLayout() {
           </div>
           
           <div>
-            <h4 className="text-white font-bold mb-6 text-lg tracking-wide">البروتوكولات</h4>
+            <h4 className="text-white font-bold mb-6 text-lg tracking-wide">{t('footer.protocols')}</h4>
             <ul className="space-y-4 text-sm">
-              <li><Link to="/#about" className="hover:text-blue-400 transition-colors flex items-center gap-2"><ArrowRight className="w-3 h-3" />مركز المنصة</Link></li>
-              <li><Link to="/#terms" className="hover:text-blue-400 transition-colors flex items-center gap-2"><ArrowRight className="w-3 h-3" />شروط الاتصال</Link></li>
-              <li><Link to="/#privacy" className="hover:text-blue-400 transition-colors flex items-center gap-2"><ArrowRight className="w-3 h-3" />تشفير الخصوصية</Link></li>
+              <li><Link to="/#about" className="hover:text-blue-400 transition-colors flex items-center gap-2"><ArrowRight className={`w-3 h-3 ${isRTL ? '' : 'rotate-180'}`} />{t('footer.platformCenter')}</Link></li>
+              <li><Link to="/#terms" className="hover:text-blue-400 transition-colors flex items-center gap-2"><ArrowRight className={`w-3 h-3 ${isRTL ? '' : 'rotate-180'}`} />{t('footer.terms')}</Link></li>
+              <li><Link to="/#privacy" className="hover:text-blue-400 transition-colors flex items-center gap-2"><ArrowRight className={`w-3 h-3 ${isRTL ? '' : 'rotate-180'}`} />{t('footer.privacy')}</Link></li>
             </ul>
           </div>
           
           <div>
-            <h4 className="text-white font-bold mb-6 text-lg tracking-wide">التصنيفات</h4>
+            <h4 className="text-white font-bold mb-6 text-lg tracking-wide">{t('footer.categories')}</h4>
             <ul className="space-y-4 text-sm">
-              <li><Link to="/?category=نماذج اللغات" className="hover:text-cyan-400 transition-colors">نماذج اللغات التوليدية</Link></li>
-              <li><Link to="/?category=رعاية صحية" className="hover:text-cyan-400 transition-colors">الحوسبة الطبية</Link></li>
-              <li><Link to="/?category=روبوتات" className="hover:text-cyan-400 transition-colors">تطور الروبوتات</Link></li>
+              <li><Link to="/?category=نماذج اللغات" className="hover:text-cyan-400 transition-colors">{t('footer.generativeModels')}</Link></li>
+              <li><Link to="/?category=رعاية صحية" className="hover:text-cyan-400 transition-colors">{t('footer.medicalComputing')}</Link></li>
+              <li><Link to="/?category=روبوتات" className="hover:text-cyan-400 transition-colors">{t('footer.roboticsEvolution')}</Link></li>
             </ul>
           </div>
         </div>
         
         <div className="container mx-auto px-4 lg:px-6 mt-16 pt-8 border-t border-slate-800/80 text-center flex flex-col md:flex-row justify-between items-center text-xs text-slate-600">
-          <p>بنية النظام الإصدار 3.0 - © {new Date().getFullYear()} AI News Portal. جميع الحقوق محفوظة.</p>
+          <p>{t('footer.rights').replace('{year}', new Date().getFullYear().toString())}</p>
           <p className="mt-4 md:mt-0 flex items-center">
-            توليد واجهة المستخدم بواسطة الخوارزميات
-            <Cpu className="w-4 h-4 mr-2 text-cyan-500/50" />
+            {t('footer.generatedBy')}
+            <Cpu className={`w-4 h-4 text-cyan-500/50 ${isRTL ? 'mr-2' : 'ml-2'}`} />
           </p>
         </div>
       </footer>

@@ -5,11 +5,16 @@ import { useSearchParams } from 'react-router-dom';
 import { NewsCard } from '../components/NewsCard';
 import { CATEGORIES } from '../data/news';
 import { useNewsStore } from '../store/newsStore';
+import { useTranslation } from 'react-i18next';
 import { Search, Mail, Zap, Network } from 'lucide-react';
 
 export default function HomePage() {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language.startsWith('ar');
+  const CATEGORY_ALL = t('home.allCategories');
+
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'الكل';
+  const initialCategory = searchParams.get('category') || CATEGORY_ALL;
   
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState(initialCategory);
@@ -18,13 +23,13 @@ export default function HomePage() {
 
   const filteredNews = articles.filter(news => {
     const matchesSearch = news.title.includes(searchTerm) || news.excerpt.includes(searchTerm);
-    const matchesCategory = activeCategory === 'الكل' || news.category === activeCategory;
+    const matchesCategory = activeCategory === CATEGORY_ALL || news.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
-    if (category === 'الكل') {
+    if (category === CATEGORY_ALL) {
       searchParams.delete('category');
     } else {
       searchParams.set('category', category);
@@ -61,18 +66,18 @@ export default function HomePage() {
             <motion.div animate={{ opacity: [1, 0.5, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}>
               <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,1)]" />
             </motion.div>
-            <span className="tracking-wide">نظام التحديث اللحظي مفعل</span>
+            <span className="tracking-wide">{t('home.systemActive')}</span>
           </motion.div>
           
           <motion.h2 variants={fadeUp} className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 lg:mb-8 leading-[1.2] lg:leading-[1.2] tracking-tight">
-            اكتشف أبعاد <br className="hidden md:block"/>
+            {t('home.heroTitle1')} <br className="hidden md:block"/>
             <span className="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 via-cyan-300 to-blue-500 text-glow inline-block mt-2">
-              الذكاء الاصطناعي
+              {t('home.heroTitle2')}
             </span>
           </motion.h2>
 
           <motion.p variants={fadeUp} className="text-base md:text-lg lg:text-xl text-slate-400 mb-10 lg:mb-14 max-w-2xl mx-auto leading-relaxed px-4">
-            المصدر الرقمي الأول والموثوق للمطورين والباحثين. تتبع نبض الخوارزميات، النماذج اللغوية، والثورات التقنية لحظة بلحظة.
+            {t('home.heroSubtitle')}
           </motion.p>
           
           {/* Cyberpunk Search Bar */}
@@ -84,8 +89,8 @@ export default function HomePage() {
               </div>
               <input 
                 type="text" 
-                placeholder="ابحث في قاعدة البيانات..." 
-                className="w-full pl-4 pr-3 lg:pr-5 py-2 lg:py-3 bg-transparent text-slate-200 placeholder-slate-500 text-sm lg:text-base font-medium focus:outline-none"
+                placeholder={t('home.searchNews')}
+                className={`w-full ${isRTL ? 'pl-4 pr-3 lg:pr-5' : 'pr-4 pl-3 lg:pl-5'} py-2 lg:py-3 bg-transparent text-slate-200 placeholder-slate-500 text-sm lg:text-base font-medium focus:outline-none`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 data-testid="search-input"
@@ -93,9 +98,9 @@ export default function HomePage() {
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="shrink-0 bg-gradient-to-l from-blue-600 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white px-6 lg:px-8 py-2.5 lg:py-3.5 rounded-full text-sm lg:text-base font-bold shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all flex items-center gap-2 ml-1"
+                className={`shrink-0 bg-gradient-to-l from-blue-600 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white px-6 lg:px-8 py-2.5 lg:py-3.5 rounded-full text-sm lg:text-base font-bold shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all flex items-center gap-2 ${isRTL ? 'ml-1' : 'mr-1'}`}
               >
-                تحليل
+                {t('home.analyze')}
               </motion.button>
             </div>
           </motion.div>
@@ -130,7 +135,7 @@ export default function HomePage() {
                 )}
                 <div className="flex items-center gap-2 relative z-10">
                   {activeCategory === category && <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_5px_#60a5fa]" />}
-                  <span>{category}</span>
+                  <span>{category === CATEGORY_ALL ? t('home.allCategories') : t(`categories.${category}`, { defaultValue: category })}</span>
                 </div>
               </motion.button>
             ))}
@@ -143,7 +148,7 @@ export default function HomePage() {
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-6 lg:h-8 bg-blue-500 rounded-full shadow-[0_0_10px_#3b82f6]" />
               <h3 className="text-2xl lg:text-3xl font-black text-white tracking-tight">
-                {activeCategory === 'الكل' ? 'تدفق البيانات الأخير' : `بيانات: ${activeCategory}`}
+                {activeCategory === CATEGORY_ALL ? t('home.recentDataFlow') : `${t('home.dataLabel')} ${t(`categories.${activeCategory}`, { defaultValue: activeCategory })}`}
               </h3>
             </div>
             <motion.div 
@@ -153,7 +158,7 @@ export default function HomePage() {
               className="text-cyan-400 font-mono text-xs lg:text-sm bg-cyan-950/30 border border-cyan-900 px-4 py-1.5 rounded-lg flex items-center gap-2 self-start md:self-auto"
             >
               <Zap className="w-3 h-3" />
-              {filteredNews.length} سجل
+              {filteredNews.length} {t('home.records')}
             </motion.div>
           </div>
           
@@ -171,17 +176,17 @@ export default function HomePage() {
                   className="col-span-full flex flex-col items-center justify-center py-20 lg:py-24 glass-panel rounded-3xl border border-dashed border-slate-700 mx-4"
                 >
                   <Network className="w-12 h-12 lg:w-16 lg:h-16 text-slate-600 mb-6" />
-                  <h4 className="text-xl lg:text-2xl font-bold text-slate-300 mb-3 text-center">لا توجد نتائج مطابقة</h4>
+                  <h4 className="text-xl lg:text-2xl font-bold text-slate-300 mb-3 text-center">{t('home.noResults')}</h4>
                   <p className="text-sm lg:text-base text-slate-500 max-w-md text-center px-4">
-                    تم مسح قاعدة البيانات ولم نجد تطابقاً. لتوسيع نطاق البحث حاول إزالة الفلاتر.
+                    {t('home.noResultsDesc')}
                   </p>
                   <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => { setSearchTerm(''); handleCategoryChange('الكل'); }}
+                    onClick={() => { setSearchTerm(''); handleCategoryChange(CATEGORY_ALL); }}
                     className="mt-8 px-6 lg:px-8 py-2.5 lg:py-3 bg-slate-800 text-blue-400 font-bold rounded-xl border border-slate-700 hover:bg-slate-700 hover:text-blue-300 hover:border-blue-500/50 transition-all shadow-lg text-sm lg:text-base"
                   >
-                    إعادة ضبط المصفوفة
+                    {t('home.resetMatrix')}
                   </motion.button>
                 </motion.div>
               )}
@@ -207,10 +212,10 @@ export default function HomePage() {
                 <motion.div animate={{ rotate: [0, 5, -5, 0] }} transition={{ repeat: Infinity, duration: 4 }}>
                   <Mail className="w-8 h-8 lg:w-10 lg:h-10 text-cyan-400" />
                 </motion.div>
-                الوصول المبكر للبيانات
+                {t('home.newsletterTitle')}
               </h2>
               <p className="text-slate-400 leading-relaxed text-sm lg:text-lg font-medium">
-                انضم لشبكة المطورين والخبراء. احصل على التحليلات العميقة وحصاد الذكاء الاصطناعي الأسبوعي مباشرة.
+                {t('home.newsletterSubtitle')}
               </p>
             </div>
             
@@ -218,8 +223,8 @@ export default function HomePage() {
               <form className="flex flex-col sm:flex-row gap-3 bg-slate-900/80 p-2 rounded-2xl border border-slate-700 w-full md:w-[480px] shadow-2xl">
                 <input 
                   type="email" 
-                  placeholder="أدخل عنوان الرابط (Email)" 
-                  className="bg-transparent text-slate-200 placeholder-slate-500 px-4 lg:px-5 py-3 focus:outline-none w-full font-medium text-sm lg:text-base text-center md:text-right"
+                  placeholder={t('home.emailPlaceholder')}
+                  className={`bg-transparent text-slate-200 placeholder-slate-500 px-4 lg:px-5 py-3 focus:outline-none w-full font-medium text-sm lg:text-base text-center ${isRTL ? 'md:text-right' : 'md:text-left'}`}
                   required
                 />
                 <motion.button 
@@ -228,12 +233,12 @@ export default function HomePage() {
                   type="submit" 
                   className="bg-blue-600 hover:bg-blue-500 text-white px-6 lg:px-8 py-3 lg:py-3.5 rounded-xl font-bold transition-all whitespace-nowrap shadow-[0_0_15px_rgba(59,130,246,0.4)] text-sm lg:text-base"
                 >
-                  تفعيل الاشتراك
+                  {t('home.subscribe')}
                 </motion.button>
               </form>
-              <p className="text-xs text-slate-500 mt-4 text-center md:text-right flex items-center justify-center md:justify-start gap-1">
+              <p className={`text-xs text-slate-500 mt-4 text-center flex items-center justify-center gap-1 ${isRTL ? 'md:text-right md:justify-start' : 'md:text-left md:justify-start'}`}>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                نظام آمن - لا نشارك بياناتك
+                {t('home.secureSystem')}
               </p>
             </div>
           </div>

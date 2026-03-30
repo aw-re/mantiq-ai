@@ -1,31 +1,34 @@
 ﻿import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { BrainCircuit, Code, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function AboutPage() {
+  const { t } = useTranslation();
+
   const features = [
     {
       icon: <BrainCircuit className="w-8 h-8 text-blue-400" />,
-      title: 'رؤية مستقبلية',
-      desc: 'نسعى دائمًا لنكون حلقة الوصل بين الباحثين والمطورين وعشاق التكنولوجيا لبناء مجتمع عربي ملم بتقنيات الذكاء الاصطناعي.'
+      title: t('about.f1Title'),
+      desc: t('about.f1Desc')
     },
     {
       icon: <Code className="w-8 h-8 text-emerald-400" />,
-      title: 'موثوقية المحتوى',
-      desc: 'فريقنا يجمع البيانات من المصادر الأصلية للمكتبات البرمجية وأوراق البحث المعتمدة (Papers) لضمان أعلى جودة.'
+      title: t('about.f2Title'),
+      desc: t('about.f2Desc')
     },
     {
       icon: <Users className="w-8 h-8 text-purple-400" />,
-      title: 'مجتمع نشط',
-      desc: 'منصة مفتوحة لمشاركة الآراء وطرح التساؤلات وإيجاد الحلول المتعلقة بهندسة البيانات الخوارزمية.'
+      title: t('about.f3Title'),
+      desc: t('about.f3Desc')
     }
   ];
 
   return (
     <div className="container mx-auto px-4 w-full">
       <Helmet>
-        <title>من نحن | منطق</title>
-        <meta name="description" content="تعرف على رؤيتنا وأهدافنا للارتقاء بالمحتوى التقني العربي." />
+        <title>{t('about.title')} | {t('header.logo')}</title>
+        <meta name="description" content={t('about.metaDesc')} />
       </Helmet>
 
       <motion.div 
@@ -33,9 +36,9 @@ export default function AboutPage() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto text-center mb-16"
       >
-        <h1 className="text-4xl md:text-5xl font-black text-white mb-6 text-glow">مهمتنا في عصر الخوارزميات</h1>
+        <h1 className="text-4xl md:text-5xl font-black text-white mb-6 text-glow">{t('about.h1')}</h1>
         <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
-          نحن منصة مستقلة أسست بواسطة مهندسين وشغوفين بالتقنية. نؤمن بأن المعرفة قوة، وأن تقنيات الذكاء الاصطناعي يجب أن تكون متاحة ومفهومة للجميع.
+          {t('about.p')}
         </p>
       </motion.div>
 

@@ -2,22 +2,25 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useNewsStore } from '../store/newsStore';
-import { ArrowRight, Calendar, Clock, Share2, Bookmark, ExternalLink } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Calendar, Clock, Share2, Bookmark, ExternalLink } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function NewsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const articles = useNewsStore(state => state.articles);
   const newsItem = articles.find(n => n.id.toString() === id);
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language.startsWith('ar');
 
   if (!newsItem) {
     return (
       <div className="container mx-auto px-4 w-full h-[60vh] flex flex-col items-center justify-center">
-        <Helmet><title>مقال غير موجود | منطق</title></Helmet>
-        <h1 className="text-4xl text-white font-bold mb-4">404</h1>
-        <p className="text-slate-400 mb-8">عذراً، لم نتمكن من العثور على المقال المطلوب في قاعدة البيانات.</p>
+        <Helmet><title>{t('article.notFoundTitle')}</title></Helmet>
+        <h1 className="text-4xl text-white font-bold mb-4">{t('article.notFoundCode')}</h1>
+        <p className="text-slate-400 mb-8">{t('article.notFoundDesc')}</p>
         <button onClick={() => navigate('/')} className="px-6 py-3 bg-blue-600 text-white rounded-xl">
-          العودة للمنصة الرئيسية
+          {t('article.backToHome')}
         </button>
       </div>
     );
@@ -30,30 +33,34 @@ export default function NewsPage() {
       className="container mx-auto px-4 w-full max-w-4xl"
     >
       <Helmet>
-        <title>{newsItem.title} | منطق</title>
+        <title>{newsItem.title} | {t('header.logo')}</title>
         <meta name="description" content={newsItem.excerpt} />
       </Helmet>
 
       <button 
         onClick={() => navigate(-1)} 
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors group"
+        className={`flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors group ${isRTL ? 'flex-row' : 'flex-row-reverse self-start w-fit'}`}
       >
-        <ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-        <span>عودة للخلف</span>
+        <span>{t('article.goBack')}</span>
+        {isRTL ? (
+          <ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+        ) : (
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+        )}
       </button>
 
       <header className="mb-10">
-        <div className="flex items-center gap-3 mb-6">
+        <div className={`flex items-center gap-3 mb-6 ${isRTL ? '' : 'flex-row'}`}>
           <span className="px-4 py-1.5 bg-blue-500/10 text-cyan-400 text-sm font-bold border border-blue-500/20 rounded-lg">
-            {newsItem.category}
+            {t(`categories.${newsItem.category}`, { defaultValue: newsItem.category })}
           </span>
-          <div className="flex items-center gap-1.5 text-slate-400 font-mono text-sm">
+          <div className="flex items-center gap-1.5 text-slate-400 font-mono text-sm border-r border-slate-700 mx-2 px-2">
             <Clock className="w-4 h-4" />
             {newsItem.date}
           </div>
           <div className="flex items-center gap-1.5 text-slate-400 text-sm">
             <Calendar className="w-4 h-4" />
-            <span>اليوم</span>
+            <span>{t('article.today')}</span>
           </div>
         </div>
 
@@ -71,8 +78,8 @@ export default function NewsPage() {
                <div className="absolute inset-0 bg-blue-500/20" />
             </div>
             <div>
-              <p className="text-white font-bold">نظام الرصد الآلي</p>
-              <p className="text-slate-500 text-sm">فريق التحرير الذكي</p>
+              <p className="text-white font-bold">{t('article.authorSystem')}</p>
+              <p className="text-slate-500 text-sm">{t('article.authorTeam')}</p>
             </div>
           </div>
           <div className="flex gap-3">
