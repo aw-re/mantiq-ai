@@ -168,6 +168,12 @@ const resources = {
         dragImage: "اسحب الصورة أو انقر للرفع",
         tags: "الوسوم",
         addTag: "أضف وسماً واضغط Enter..."
+      },
+      chatbot: {
+        title: "المساعد الذكي",
+        greeting: "مرحباً، كيف يمكنني مساعدتك؟",
+        placeholder: "اكتب رسالتك...",
+        send: "إرسال"
       }
     }
   },
@@ -335,6 +341,12 @@ const resources = {
         dragImage: "Drag image or click to upload",
         tags: "Tags",
         addTag: "Add a tag and press Enter..."
+      },
+      chatbot: {
+        title: "AI Assistant",
+        greeting: "Hello, how can I help you?",
+        placeholder: "Type your message...",
+        send: "Send"
       }
     }
   }

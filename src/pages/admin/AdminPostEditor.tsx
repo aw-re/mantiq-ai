@@ -4,8 +4,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { 
   ArrowRight, Save, Image as ImageIcon, LayoutTemplate, 
-  Tag, Globe, Eye, UploadCloud, Bold, Italic, 
-  List, Link as LinkIcon, Quote, Code
+  Tag, Globe, Eye, UploadCloud
 } from 'lucide-react';
 import { useNewsStore } from '../../store/newsStore';
 import { toast } from 'sonner';
