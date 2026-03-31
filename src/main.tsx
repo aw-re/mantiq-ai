@@ -6,6 +6,7 @@ import { Toaster } from 'sonner';
 import './index.css';
 import './i18n'; // Import i18n initialization
 import Loader from './components/Loader';
+import ProtectedRoute from './components/ProtectedRoute';
 import RootLayout from './layouts/RootLayout';
 import AdminLayout from './layouts/AdminLayout';
 
@@ -15,6 +16,7 @@ const ModelsPage = lazy(() => import('./pages/ModelsPage'));
 const ExclusivePage = lazy(() => import('./pages/ExclusivePage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminPosts = lazy(() => import('./pages/admin/AdminPosts'));
 const AdminPostEditor = lazy(() => import('./pages/admin/AdminPostEditor'));
@@ -33,14 +35,24 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: '/admin/login',
+    element: <Suspense fallback={<Loader />}><AdminLogin /></Suspense>
+  },
+  {
     path: '/admin',
-    element: <AdminLayout />,
+    element: <Suspense fallback={<Loader />}><ProtectedRoute /></Suspense>,
     children: [
-      { index: true, element: <Suspense fallback={<Loader />}><AdminDashboard /></Suspense> },
-      { path: 'posts', element: <Suspense fallback={<Loader />}><AdminPosts /></Suspense> },
-      { path: 'posts/new', element: <Suspense fallback={<Loader />}><AdminPostEditor /></Suspense> },
-      { path: 'posts/:id', element: <Suspense fallback={<Loader />}><AdminPostEditor /></Suspense> },
-      { path: '*', element: <Suspense fallback={<Loader />}><NotFoundPage /></Suspense> },
+      {
+        path: '',
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: <Suspense fallback={<Loader />}><AdminDashboard /></Suspense> },
+          { path: 'posts', element: <Suspense fallback={<Loader />}><AdminPosts /></Suspense> },
+          { path: 'posts/new', element: <Suspense fallback={<Loader />}><AdminPostEditor /></Suspense> },
+          { path: 'posts/:id', element: <Suspense fallback={<Loader />}><AdminPostEditor /></Suspense> },
+          { path: '*', element: <Suspense fallback={<Loader />}><NotFoundPage /></Suspense> },
+        ]
+      }
     ]
   }
 ]);

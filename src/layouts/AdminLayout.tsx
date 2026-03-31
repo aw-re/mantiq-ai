@@ -1,12 +1,20 @@
-﻿import { Outlet, Link, useLocation } from 'react-router-dom';
+﻿import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, FileText, Settings, Users, LogOut, ArrowRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
+import { useAuthStore } from '../store/authStore';
 
 export default function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const logout = useAuthStore(state => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
 
   const menuItems = [
     { name: t('admin.dashboard'), path: '/admin', icon: <LayoutDashboard size={20} /> },
@@ -51,7 +59,10 @@ export default function AdminLayout() {
         </nav>
 
         <div className="p-4 border-t border-slate-800">
-          <button className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-colors"
+          >
             <LogOut size={20} className={i18n.language === 'ar' ? '' : 'rotate-180'} />
             <span className="font-bold">{t('admin.logout')}</span>
           </button>

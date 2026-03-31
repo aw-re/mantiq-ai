@@ -1,5 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { 
   ArrowRight, Save, Image as ImageIcon, LayoutTemplate, 
   Tag, Globe, Eye, UploadCloud, Bold, Italic, 
@@ -104,25 +106,7 @@ export default function AdminPostEditor() {
               className="w-full bg-transparent text-2xl md:text-3xl font-black text-white placeholder-slate-600 focus:outline-none border-b border-transparent focus:border-blue-500/50 pb-4 transition-colors mb-6"
             />
 
-            {/* Simulated Rich Text Toolbar */}
-            <div className="flex items-center gap-1 p-2 bg-slate-900 border border-slate-800 rounded-lg mb-4 flex-wrap">
-              <button className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded"><Bold size={16} /></button>
-              <button className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded"><Italic size={16} /></button>
-              <div className="w-px h-5 bg-slate-700 mx-1" />
-              <button className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded"><List size={16} /></button>
-              <button className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded"><Quote size={16} /></button>
-              <button className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded"><Code size={16} /></button>
-              <div className="w-px h-5 bg-slate-700 mx-1" />
-              <button className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded"><LinkIcon size={16} /></button>
-              <button className="p-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded flex items-center gap-1"><ImageIcon size={16} /> <span className="text-[10px]">{t('admin.insertMedia')}</span></button>
-            </div>
-
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder={t('admin.contentPlaceholder')}
-              className="w-full h-[500px] bg-transparent text-slate-300 placeholder-slate-600 focus:outline-none leading-loose resize-none"
-            />
+            <ReactQuill theme="snow" value={content} onChange={setContent} className="h-[400px] mb-12 text-slate-300" />
           </div>
 
           <div className="glass-panel p-6 rounded-2xl border border-slate-700">
