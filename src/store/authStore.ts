@@ -14,18 +14,28 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       user: null,
       login: async (email, password) => {
-        // يتم محاكاة اتصال بالخادم (سيتم استبداله بـ API لاحقاً)
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // بيانات تجريبية (Admin)
-        if (email === 'admin@mantiq.ai' && password === 'admin123') {
-          set({ 
-            isAuthenticated: true, 
-            user: { name: 'المدير العام', email, role: 'admin' } 
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
           });
-          return true;
+          
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.user) {
+              set({ 
+                isAuthenticated: true, 
+                user: data.user 
+              });
+              return true;
+            }
+          }
+          return false;
+        } catch (error) {
+          console.error('Login error:', error);
+          return false;
         }
-        return false;
       },
       logout: () => set({ isAuthenticated: false, user: null }),
     }),

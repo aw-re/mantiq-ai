@@ -1,15 +1,22 @@
-﻿import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+﻿import { useEffect } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, FileText, Settings, Users, LogOut, ArrowRight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../store/authStore';
+import { useNewsStore } from '../store/newsStore';
 
 export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const logout = useAuthStore(state => state.logout);
+
+  const fetchArticles = useNewsStore(state => state.fetchArticles);
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
 
   const handleLogout = () => {
     logout();

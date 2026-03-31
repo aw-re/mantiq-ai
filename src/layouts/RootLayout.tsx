@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Network, Sparkles, ArrowRight, Cpu, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AIAssistant from '../components/AIAssistant';
+import { useNewsStore } from '../store/newsStore';
 
 export default function RootLayout() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +13,11 @@ export default function RootLayout() {
   const { t, i18n } = useTranslation();
 
   const isRTL = i18n.language.startsWith('ar');
+
+  const fetchArticles = useNewsStore(state => state.fetchArticles);
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
 
   const navLinks = [
     { name: t('nav.home'), path: '/' },
