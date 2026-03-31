@@ -2,8 +2,9 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useNewsStore } from '../store/newsStore';
-import { ArrowRight, ArrowLeft, Calendar, Clock, Share2, Bookmark, ExternalLink } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Calendar, Clock, Share2, Bookmark, ExternalLink, Heart, MessageSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import DecodeText from '../components/DecodeText';
 
 export default function NewsPage() {
   const { id } = useParams();
@@ -12,6 +13,8 @@ export default function NewsPage() {
   const newsItem = articles.find(n => n.id.toString() === id);
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language.startsWith('ar');
+
+  const heroImage = newsItem?.imageUrl || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=2000';
 
   if (!newsItem) {
     return (
@@ -27,11 +30,15 @@ export default function NewsPage() {
   }
 
   return (
-    <motion.article 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="container mx-auto px-4 w-full max-w-4xl"
-    >
+    <>
+      <Helmet>
+        <title>{newsItem.title} | منطق</title>
+      </Helmet>
+      <motion.article
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="container mx-auto px-4 w-full max-w-4xl pt-6 relative"
+      >
       <Helmet>
         <title>{newsItem.title} | {t('header.logo')}</title>
         <meta name="description" content={newsItem.excerpt} />
@@ -65,12 +72,21 @@ export default function NewsPage() {
         </div>
 
         <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6 text-glow">
-          {newsItem.title}
+          <DecodeText text={newsItem.title} speed={25} />
         </h1>
 
-        <p className="text-xl text-slate-300 leading-relaxed mb-8">
+        <p className="text-xl md:text-2xl text-slate-300 leading-relaxed mb-8">
           {newsItem.excerpt}
         </p>
+
+        <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden mb-10 group">
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent z-10" />
+          <img 
+            src={heroImage} 
+            alt={newsItem.title} 
+            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+          />
+        </div>
 
         <div className="flex items-center justify-between py-6 border-y border-slate-800">
           <div className="flex items-center gap-4">
@@ -93,6 +109,36 @@ export default function NewsPage() {
         </div>
       </header>
 
+      {/* Floating Action Bar */}
+      <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:bottom-auto md:top-[40vh] ${isRTL ? 'md:left-8 lg:left-24' : 'md:right-8 lg:right-24'} z-40`}>
+        <div className="flex md:flex-col gap-3 p-3 bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl">
+          <button className="p-3 bg-slate-800/50 rounded-xl text-slate-400 hover:text-pink-500 hover:bg-pink-500/10 transition-all flex flex-col items-center gap-1 group">
+            <Heart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold">24</span>
+          </button>
+          <button className="p-3 bg-slate-800/50 rounded-xl text-slate-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all flex flex-col items-center gap-1 group">
+            <MessageSquare className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold">12</span>
+          </button>
+          <button className="p-3 bg-slate-800/50 rounded-xl text-slate-400 hover:text-cyan-500 hover:bg-cyan-500/10 transition-all group">
+            <Share2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+          </button>
+          <button className="p-3 bg-slate-800/50 rounded-xl text-slate-400 hover:text-yellow-500 hover:bg-yellow-500/10 transition-all group">
+            <Bookmark className="w-5 h-5 group-hover:scale-110 transition-transform" />
+          </button>
+        </div>
+      </div>
+
+      {newsItem.content ? (
+        <div 
+          className="prose prose-invert prose-blue max-w-none text-slate-300 text-lg md:text-xl leading-loose mb-16
+          [&>p]:mb-6 [&>h2]:text-3xl [&>h2]:font-bold [&>h2]:mb-6 [&>h2]:mt-10 [&>h2]:text-white 
+          [&>h3]:text-2xl [&>h3]:font-bold [&>h3]:mb-4 [&>h3]:mt-8 [&>h3]:text-slate-200
+          [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:list-decimal [&>ol]:pl-6
+          [&>blockquote]:border-l-4 [&>blockquote]:border-blue-500 [&>blockquote]:pl-6 [&>blockquote]:italic [&>blockquote]:text-slate-400"
+          dangerouslySetInnerHTML={{ __html: newsItem.content }}
+        />
+      ) : (
       <div className="prose prose-invert prose-blue max-w-none text-slate-300 text-lg leading-loose mb-16">
         <p>
           شهدت أسواق التكنولوجيا وتطوير البرمجيات ثورة جديدة اليوم حيث أعلنت كبرى الشركات عن نماذج لغوية متقدمة. تفاصيل هذا التحديث تشير إلى أن التطوير لم يعد مقتصراً على الشركات الكبرى بل أصبح متاحاً للمطورين المستقلين عبر واجهات برمجية محسنة...
@@ -109,8 +155,23 @@ export default function NewsPage() {
         <p>
           ختاماً، يمكننا القول أن المستقبل القريب سيشهد اعتماداً أوسع وأكثر تخصيصاً للذكاء الاصطناعي لحل المشكلات المعقدة بكفاءة غير مسبوقة.
         </p>
-      </div>
+      </div>      )}
 
+      {/* Fake Author Bio */}
+      <div className="bg-slate-800/30 border border-slate-700/50 rounded-3xl p-8 mb-16 flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-start">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 border-4 border-slate-800 overflow-hidden shrink-0 flex items-center justify-center text-3xl font-bold text-white shadow-xl">
+          AI
+        </div>
+        <div>
+          <h3 className="text-2xl font-bold text-white mb-2">{t('article.authorSystem', 'Mantiq AI Team')}</h3>
+          <p className="text-slate-400 mb-4 leading-relaxed">
+            {t('article.authorBio', 'We are a group of AI enthusiasts and developers dedicated to bringing the latest news, models, and tools to the AI community.')}
+          </p>
+          <button className="px-5 py-2 bg-slate-800 hover:bg-blue-600 border border-slate-700 transition-all text-white rounded-lg text-sm font-semibold">
+            {t('article.viewAllArticles', 'View All Articles')}
+          </button>
+        </div>
+      </div>
       <div className="flex justify-center mb-24">
          <button className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-all">
            قراءة المصدر الأصلي للمقال
@@ -119,6 +180,7 @@ export default function NewsPage() {
       </div>
 
     </motion.article>
+    </>
   );
 }
 

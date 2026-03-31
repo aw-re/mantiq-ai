@@ -5,21 +5,25 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import Tilt from 'react-parallax-tilt';
+
 export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excerpt, author, date, imageUrl, category, readTime, tags }, ref) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language.startsWith('ar');
-  
+
   return (
-    <motion.article
-      ref={ref}
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-      transition={{ duration: 0.4, type: 'spring', stiffness: 100, damping: 20 }}
-      style={{ willChange: 'transform, opacity' }}
-      className="group relative flex flex-col glass-panel rounded-3xl overflow-hidden hover:box-glow transition-all duration-300 h-full hover:border-blue-500/50 transform-gpu"
-      data-testid="news-card"
-    >
+    <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} perspective={1000} transitionSpeed={1000} scale={1.02} className="h-full transform-gpu">
+      <motion.article
+        ref={ref as any}
+        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, margin: "-50px" }}
+        exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+        transition={{ duration: 0.6, type: 'spring', stiffness: 80, damping: 20 }}
+        style={{ willChange: 'transform, opacity' }}
+        className="group relative flex flex-col glass-panel rounded-3xl overflow-hidden hover:box-glow transition-all duration-300 h-full hover:border-blue-500/50 transform-gpu"
+        data-testid="news-card"
+      >
       {/* Glow effect that follows the top border on hover */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 z-30" />
 
@@ -110,6 +114,7 @@ export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excer
         </div>
       </div>
     </motion.article>
+    </Tilt>
   );
 });
 

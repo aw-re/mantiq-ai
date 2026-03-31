@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 import { NewsCard } from '../components/NewsCard';
@@ -7,11 +7,18 @@ import { CATEGORIES, ALL_TAGS } from '../data/news';
 import { useNewsStore } from '../store/newsStore';
 import { useTranslation } from 'react-i18next';
 import { Search, Mail, Zap, Network, Filter, Tag } from 'lucide-react';
+import DecodeText from '../components/DecodeText';
+import MagneticWrapper from '../components/MagneticWrapper';
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language.startsWith('ar');
   const CATEGORY_ALL = t('home.allCategories');
+
+  const { scrollY } = useScroll();
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const heroScale = useTransform(scrollY, [0, 400], [1, 0.9]);
+  const heroY = useTransform(scrollY, [0, 400], [0, 100]);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || CATEGORY_ALL;
@@ -66,7 +73,8 @@ export default function HomePage() {
 
       <div className="container mx-auto px-4 w-full">
         {/* Transformative Hero Section */}
-        <motion.section 
+        <motion.section
+          style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
           initial="hidden"
           animate="show"
           variants={staggerContainer}
@@ -80,9 +88,9 @@ export default function HomePage() {
           </motion.div>
           
           <motion.h2 variants={fadeUp} className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 lg:mb-8 leading-[1.2] lg:leading-[1.2] tracking-tight">
-            {t('home.heroTitle1')} <br className="hidden md:block"/>
+            <DecodeText text={t('home.heroTitle1') || ""} speed={30} delay={500} /> <br className="hidden md:block"/>
             <span className="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 via-cyan-300 to-blue-500 text-glow inline-block mt-2">
-              {t('home.heroTitle2')}
+              <DecodeText text={t('home.heroTitle2') || ""} speed={40} delay={1500} />
             </span>
           </motion.h2>
 
@@ -105,13 +113,15 @@ export default function HomePage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 data-testid="search-input"
               />
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`shrink-0 bg-gradient-to-l from-blue-600 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white px-6 lg:px-8 py-2.5 lg:py-3.5 rounded-full text-sm lg:text-base font-bold shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all flex items-center gap-2 ${isRTL ? 'ml-1' : 'mr-1'}`}
-              >
-                {t('home.analyze')}
-              </motion.button>
+              <MagneticWrapper intensity={0.4}>
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`shrink-0 bg-gradient-to-l from-blue-600 to-blue-500 hover:from-blue-500 hover:to-cyan-400 text-white px-6 lg:px-8 py-2.5 lg:py-3.5 rounded-full text-sm lg:text-base font-bold shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all flex items-center gap-2 ${isRTL ? 'ml-1' : 'mr-1'}`}
+                >
+                  {t('home.analyze')}
+                </motion.button>
+              </MagneticWrapper>
             </div>
           </motion.div>
         </motion.section>

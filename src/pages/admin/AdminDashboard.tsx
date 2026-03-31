@@ -1,12 +1,14 @@
 ﻿import { Activity, FileText, TrendingUp, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useNewsStore } from '../../store/newsStore';
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
+  const { articles } = useNewsStore();
 
   const stats = [
-    { title: t('admin.totalArticles'), value: '142', icon: <FileText size={24} className="text-blue-400" /> },
+    { title: t('admin.totalArticles'), value: articles.length.toString(), icon: <FileText size={24} className="text-blue-400" /> },
     { title: t('admin.dailyVisits'), value: '3,842', icon: <Activity size={24} className="text-emerald-400" /> },
     { title: t('admin.engagementRate'), value: '+24%', icon: <TrendingUp size={24} className="text-purple-400" /> },
     { title: t('admin.users'), value: '891', icon: <Users size={24} className="text-orange-400" /> }

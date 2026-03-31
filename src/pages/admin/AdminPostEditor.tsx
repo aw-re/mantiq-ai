@@ -23,11 +23,14 @@ export default function AdminPostEditor() {
   const [content, setContent] = useState(''); // Simulated rich text
   const [category, setCategory] = useState(articleToEdit?.category || 'نماذج اللغات');
   const [status, setStatus] = useState(articleToEdit ? 'published' : 'draft');
+  const [tags, setTags] = useState<string[]>(articleToEdit?.tags || []);
 
   useEffect(() => {
     if (articleToEdit) {
       setTitle(articleToEdit.title);
       setCategory(articleToEdit.category);
+      setContent(articleToEdit.content);
+      setTags(articleToEdit.tags || []);
     }
   }, [articleToEdit]);
 
@@ -40,7 +43,7 @@ export default function AdminPostEditor() {
     }
     
     if (isEditing && articleToEdit) {
-      updateArticle(articleToEdit.id, { title, category });
+      updateArticle(articleToEdit.id, { title, category, content, tags });
       toast.success(t('admin.updateSuccess'));
     } else {
       addArticle({
@@ -49,7 +52,7 @@ export default function AdminPostEditor() {
         excerpt: content.substring(0, 100) || t('admin.simulatedExcerpt'),
         content: content || t('admin.simulatedContent'),
         category,
-        tags: [],
+        tags,
         date: new Date().toISOString().split('T')[0],
         readTime: '5 د',
         author: t('admin.systemAdmin'),
@@ -193,14 +196,31 @@ export default function AdminPostEditor() {
               <Tag className="w-5 h-5 text-orange-400" />
               {t('admin.tags')}
             </h3>
-            <input type="text" placeholder={t('admin.addTag')} className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-slate-300 mb-3 focus:outline-none focus:border-orange-500" />
+            <input 
+              type="text" 
+              placeholder="Press Enter to add tag..." 
+              className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-slate-300 mb-3 focus:outline-none focus:border-orange-500" 
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const newTag = e.currentTarget.value.trim();
+                  if (newTag && !tags.includes(newTag)) {
+                    setTags([...tags, newTag]);
+                  }
+                  e.currentTarget.value = '';
+                }
+              }}
+            />
             <div className="flex flex-wrap gap-2">
-              <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-300 flex items-center gap-1 cursor-pointer hover:border-red-500">
-                مفتوح_المصدر &times;
-              </span>
-              <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-300 flex items-center gap-1 cursor-pointer hover:border-red-500">
-                GPT-4 &times;
-              </span>
+              {tags.map((tag, index) => (
+                <span 
+                  key={index}
+                  onClick={() => setTags(tags.filter(t => t !== tag))}
+                  className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-300 flex items-center gap-1 cursor-pointer hover:border-red-500"
+                >
+                  {tag} &times;
+                </span>
+              ))}
             </div>
           </div>
         </div>

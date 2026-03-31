@@ -1,10 +1,13 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { Menu, X, Network, Sparkles, ArrowRight, Cpu, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import AIAssistant from '../components/AIAssistant';
 import { useNewsStore } from '../store/newsStore';
+import CyberBackground from '../components/CyberBackground';
+import CustomCursor from '../components/CustomCursor';
+import MagneticWrapper from '../components/MagneticWrapper';
 
 export default function RootLayout() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,6 +16,12 @@ export default function RootLayout() {
   const { t, i18n } = useTranslation();
 
   const isRTL = i18n.language.startsWith('ar');
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   const fetchArticles = useNewsStore(state => state.fetchArticles);
   useEffect(() => {
@@ -48,22 +57,13 @@ export default function RootLayout() {
 
   return (
     <div className={`min-h-screen font-sans overflow-x-hidden flex flex-col ${isRTL ? '' : 'font-sans'}`} dir={isRTL ? "rtl" : "ltr"}>
-      {/* Background Layers */}
-      <div className="fixed inset-0 bg-[#030712] -z-20" />
-      <div className="fixed top-0 inset-x-0 h-[800px] overflow-hidden -z-10 bg-grid-white pointer-events-none">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 45, 0], opacity: [0.15, 0.25, 0.15] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] top-[-300px] right-[-200px]" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], rotate: [0, -30, 0], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute w-[900px] h-[900px] bg-cyan-600/10 rounded-full blur-[150px] bottom-[-400px] left-[-200px]" 
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#030712]/80 to-[#030712]" />
-      </div>
-
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-cyan-400 to-purple-500 origin-left z-[100]"
+        style={{ scaleX, transformOrigin: isRTL ? 'right' : 'left' }}
+      />
+      <CustomCursor />
+      <CyberBackground />
+      
       {/* Header */}
       <motion.header 
         initial={{ y: -100 }}
@@ -90,18 +90,19 @@ export default function RootLayout() {
           {/* Desktop Nav */}
           <nav className={`hidden md:flex space-x-8 font-semibold text-sm ${isRTL ? 'space-x-reverse' : ''}`}>
             {navLinks.map((item) => (
-              <Link 
-                key={item.name}
-                to={item.path} 
-                className="text-slate-400 hover:text-white transition-colors relative group py-1 flex items-center gap-1.5"
-              >
-                {item.name}
-                {item.icon}
-                <span className="absolute -bottom-1 right-0 w-0 h-[2px] bg-gradient-to-l from-blue-500 to-cyan-400 group-hover:w-full transition-all duration-300 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-              </Link>
+                <MagneticWrapper key={item.name} intensity={0.2}>
+                  <Link
+                    to={item.path}
+                    className="text-slate-400 hover:text-white transition-colors relative group py-1 flex items-center gap-1.5"
+                  >
+                    {item.name}
+                    {item.icon}
+                    <span className="absolute -bottom-1 right-0 w-0 h-[2px] bg-gradient-to-l from-blue-500 to-cyan-400 group-hover:w-full transition-all duration-300 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+                  </Link>
+                </MagneticWrapper>
             ))}
           </nav>
-          
+
           <div className="flex items-center gap-4 text-white font-medium">
             <button 
               onClick={toggleLanguage}
@@ -161,12 +162,21 @@ export default function RootLayout() {
 
       {/* Main Outlet */}
       <main className="flex-grow flex flex-col items-center w-full pt-32 lg:pt-48 pb-24 relative z-10">
-        <div className="w-full">
-          <Outlet />
-        </div>
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={location.pathname}
+              initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="w-full"
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
       </main>
 
-      {/* Footer */}
+        {/* Footer */}
       <footer className="bg-[#020408] text-slate-400 py-12 lg:py-16 border-t border-slate-800/80 relative z-10 w-full overflow-hidden mt-auto">
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-900/50 to-transparent" />
         
@@ -205,9 +215,9 @@ export default function RootLayout() {
           <div>
             <h4 className="text-white font-bold mb-6 text-lg tracking-wide">{t('footer.categories')}</h4>
             <ul className="space-y-4 text-sm">
-              <li><Link to="/?category=نماذج اللغات" className="hover:text-cyan-400 transition-colors">{t('footer.generativeModels')}</Link></li>
-              <li><Link to="/?category=رعاية صحية" className="hover:text-cyan-400 transition-colors">{t('footer.medicalComputing')}</Link></li>
-              <li><Link to="/?category=روبوتات" className="hover:text-cyan-400 transition-colors">{t('footer.roboticsEvolution')}</Link></li>
+              <li><Link to="/?category=????? ??????" className="hover:text-cyan-400 transition-colors">{t('footer.generativeModels')}</Link></li>
+              <li><Link to="/?category=????? ????" className="hover:text-cyan-400 transition-colors">{t('footer.medicalComputing')}</Link></li>
+              <li><Link to="/?category=???????" className="hover:text-cyan-400 transition-colors">{t('footer.roboticsEvolution')}</Link></li>
             </ul>
           </div>
         </div>
@@ -224,5 +234,6 @@ export default function RootLayout() {
     </div>
   );
 }
+
 
 
