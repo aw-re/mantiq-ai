@@ -1,4 +1,4 @@
-import i18n from 'i18next';
+﻿import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -26,7 +26,7 @@ const resources = {
         heroTitle1: "اكتشف أبعاد",
         heroTitle2: "الذكاء الاصطناعي",
         heroSubtitle: "المصدر الرقمي الأول والموثوق للمطورين والباحثين. تتبع نبض الخوارزميات، النماذج اللغوية، والثورات التقنية لحظة بلحظة.",
-        analyze: "تحليل",
+        analyze: "تحليل", filterByTags: "الفلترة بالوسوم:",
         recentDataFlow: "تدفق البيانات الأخير",
         dataLabel: "بيانات:",
         records: "سجل",
@@ -199,7 +199,7 @@ const resources = {
         heroTitle1: "Discover dimensions of",
         heroTitle2: "Artificial Intelligence",
         heroSubtitle: "The premier digital source for developers and researchers. Track the pulse of algorithms, language models, and tech revolutions moment by moment.",
-        analyze: "Analyze",
+        analyze: "Analyze", filterByTags: "Filter by Tags:",
         recentDataFlow: "Recent Data Flow",
         dataLabel: "Data:",
         records: "Records",

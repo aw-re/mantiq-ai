@@ -1,0 +1,11 @@
+import{c as i,u as n,j as e,F as c,f as d,m as r}from"./index-BUll-x0S.js";/**
+ * @license lucide-react v0.344.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const o=i("Activity",[["path",{d:"M22 12h-4l-3 9L9 3l-3 9H2",key:"d5dnw9"}]]);/**
+ * @license lucide-react v0.344.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const m=i("TrendingUp",[["polyline",{points:"22 7 13.5 15.5 8.5 10.5 2 17",key:"126l90"}],["polyline",{points:"16 7 22 7 22 13",key:"kwv8wd"}]]);function p(){const{t:s}=n(),l=[{title:s("admin.totalArticles"),value:"142",icon:e.jsx(c,{size:24,className:"text-blue-400"})},{title:s("admin.dailyVisits"),value:"3,842",icon:e.jsx(o,{size:24,className:"text-emerald-400"})},{title:s("admin.engagementRate"),value:"+24%",icon:e.jsx(m,{size:24,className:"text-purple-400"})},{title:s("admin.users"),value:"891",icon:e.jsx(d,{size:24,className:"text-orange-400"})}];return e.jsxs("div",{children:[e.jsx("h1",{className:"text-3xl font-black text-white mb-8",children:s("admin.overview")}),e.jsx("div",{className:"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10",children:l.map((a,t)=>e.jsxs(r.div,{initial:{opacity:0,scale:.9},animate:{opacity:1,scale:1},transition:{delay:t*.1},className:"glass-panel p-6 rounded-2xl border border-slate-700 hover:border-slate-500 transition-colors",children:[e.jsx("div",{className:"flex justify-between items-start mb-4",children:e.jsx("div",{className:"p-3 bg-slate-800 rounded-xl",children:a.icon})}),e.jsx("h3",{className:"text-slate-400 font-medium mb-1",children:a.title}),e.jsx("p",{className:"text-3xl font-black text-white",children:a.value})]},t))}),e.jsxs("div",{className:"glass-panel p-8 rounded-2xl border border-slate-700",children:[e.jsx("h2",{className:"text-xl font-bold text-white mb-6",children:s("admin.recentActivity")}),e.jsxs("div",{className:"space-y-4 text-slate-300",children:[e.jsx("p",{className:"py-3 border-b border-slate-800",children:s("admin.activity1")}),e.jsx("p",{className:"py-3 border-b border-slate-800",children:s("admin.activity2")}),e.jsx("p",{className:"py-3",children:s("admin.activity3")})]})]})]})}export{p as default};

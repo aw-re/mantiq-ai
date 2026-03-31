@@ -6,6 +6,7 @@ export interface NewsArticle {
   author: string;
   date: string;
   category: string;
+  tags: string[];
   imageUrl: string;
   readTime: string;
 }
@@ -19,6 +20,7 @@ export const MOCK_NEWS: NewsArticle[] = [
     author: 'أحمد سعيد',
     date: '30 مارس 2026',
     category: 'نماذج اللغات',
+    tags: ['LLM', 'GPT', 'المنطق'],
     imageUrl: 'https://images.unsplash.com/photo-1620712948343-008423f594A2?auto=format&fit=crop&q=80&w=800',
     readTime: '4 دقائق'
   },
@@ -30,6 +32,7 @@ export const MOCK_NEWS: NewsArticle[] = [
     author: 'د. سارة محمد',
     date: '28 مارس 2026',
     category: 'رعاية صحية',
+    tags: ['طب', 'تشخيص', 'رؤية حاسوبية'],
     imageUrl: 'https://images.unsplash.com/photo-1579566346927-c68383817fa2?auto=format&fit=crop&q=80&w=800',
     readTime: '5 دقائق'
   },
@@ -41,6 +44,7 @@ export const MOCK_NEWS: NewsArticle[] = [
     author: 'خالد عبد الله',
     date: '25 مارس 2026',
     category: 'روبوتات',
+    tags: ['روبوتات', 'تعلم آلي', 'مستقبل'],
     imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=800',
     readTime: '3 دقائق'
   },
@@ -52,6 +56,7 @@ export const MOCK_NEWS: NewsArticle[] = [
     author: 'منى حسن',
     date: '20 مارس 2026',
     category: 'تشريعات وقوانين',
+    tags: ['قوانين', 'مالية', 'أخلاقيات الذكاء'],
     imageUrl: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff0f?auto=format&fit=crop&q=80&w=800',
     readTime: '6 دقائق'
   },
@@ -63,9 +68,12 @@ export const MOCK_NEWS: NewsArticle[] = [
     author: 'رامي حسين',
     date: '15 مارس 2026',
     category: 'فنون وإبداع',
+    tags: ['ذكاء توليدي', 'سينما', 'فنون'],
     imageUrl: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=800',
     readTime: '4 دقائق'
   }
 ];
+
+export const ALL_TAGS = ['LLM', 'GPT', 'المنطق', 'طب', 'تشخيص', 'رؤية حاسوبية', 'روبوتات', 'تعلم آلي', 'مستقبل', 'قوانين', 'مالية', 'أخلاقيات الذكاء', 'ذكاء توليدي', 'سينما', 'فنون'];
 
 export const CATEGORIES = ['الكل', 'نماذج اللغات', 'رعاية صحية', 'روبوتات', 'تشريعات وقوانين', 'فنون وإبداع'];

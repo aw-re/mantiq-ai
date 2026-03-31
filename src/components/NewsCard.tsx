@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excerpt, author, date, imageUrl, category, readTime }, ref) => {
+export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excerpt, author, date, imageUrl, category, readTime, tags }, ref) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language.startsWith('ar');
   
@@ -63,10 +63,23 @@ export const NewsCard = forwardRef<HTMLElement, NewsArticle>(({ id, title, excer
           {title}
         </h3>
         
-        <p className="text-slate-400 text-sm mb-6 flex-grow line-clamp-3 leading-relaxed">
+        <p className="text-slate-400 text-sm mb-4 flex-grow line-clamp-3 leading-relaxed">
           {excerpt}
         </p>
-        
+
+        {tags && tags.length > 0 && (
+          <div className={`flex flex-wrap gap-1.5 mb-6 ${isRTL ? 'justify-end' : 'justify-start'}`}>
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-2 py-0.5 text-[10px] font-mono font-medium rounded text-cyan-400 bg-cyan-950/40 border border-cyan-800/60 shadow-[0_0_8px_rgba(6,182,212,0.1)] hover:border-cyan-500/50 hover:bg-cyan-900/40 transition-colors"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center justify-between pt-5 border-t border-slate-700/50 mt-auto">
           <div className={`flex items-center space-x-3 ${isRTL ? 'space-x-reverse' : ''}`}>
             <div className={`w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-blue-400 group-hover:border-blue-500/50 transition-colors ${isRTL ? 'ml-2' : 'mr-2'}`}>

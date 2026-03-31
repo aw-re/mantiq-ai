@@ -49,6 +49,7 @@ export default function AdminPostEditor() {
         excerpt: content.substring(0, 100) || t('admin.simulatedExcerpt'),
         content: content || t('admin.simulatedContent'),
         category,
+        tags: [],
         date: new Date().toISOString().split('T')[0],
         readTime: '5 د',
         author: t('admin.systemAdmin'),

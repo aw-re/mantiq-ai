@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 import { NewsCard } from '../components/NewsCard';
-import { CATEGORIES } from '../data/news';
+import { CATEGORIES, ALL_TAGS } from '../data/news';
 import { useNewsStore } from '../store/newsStore';
 import { useTranslation } from 'react-i18next';
-import { Search, Mail, Zap, Network } from 'lucide-react';
+import { Search, Mail, Zap, Network, Filter, Tag } from 'lucide-react';
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
@@ -18,14 +18,24 @@ export default function HomePage() {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [activeTags, setActiveTags] = useState<string[]>([]);
 
   const articles = useNewsStore(state => state.articles);
 
   const filteredNews = articles.filter(news => {
     const matchesSearch = news.title.includes(searchTerm) || news.excerpt.includes(searchTerm);
     const matchesCategory = activeCategory === CATEGORY_ALL || news.category === activeCategory;
-    return matchesSearch && matchesCategory;
+    const matchesTags = activeTags.length === 0 || activeTags.every(tag => news.tags?.includes(tag));
+    return matchesSearch && matchesCategory && matchesTags;
   });
+
+  const toggleTag = (tag: string) => {
+    setActiveTags(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
@@ -138,6 +148,32 @@ export default function HomePage() {
                   <span>{category === CATEGORY_ALL ? t('home.allCategories') : t(`categories.${category}`, { defaultValue: category })}</span>
                 </div>
               </motion.button>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-6 flex flex-wrap gap-2 justify-center max-w-4xl mx-auto px-4 items-center"
+          >
+            <div className={`flex items-center gap-2 text-slate-400 text-sm font-semibold p-2 mr-2 ${isRTL ? 'ml-2 mr-0' : ''}`}>
+              <Filter className="w-4 h-4 text-blue-500" />
+              <span>{t('home.filterByTags', 'Tags:')}</span>
+            </div>
+            {ALL_TAGS.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => toggleTag(tag)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 border ${
+                  activeTags.includes(tag)
+                    ? 'bg-blue-600/20 text-blue-400 border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.2)]'
+                    : 'bg-slate-900/60 text-slate-500 border-slate-800 hover:border-slate-700 hover:text-slate-300'
+                }`}
+              >
+                <Tag className="w-3 h-3" />
+                {tag}
+              </button>
             ))}
           </motion.div>
         </section>
